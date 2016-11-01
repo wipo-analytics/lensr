@@ -1,0 +1,14 @@
+inventors
+
+
+#Single
+
+# https://www.lens.org/lens/search?q=inventor%3A%22Smith+Hamilton%22~2&l=en
+
+#OR
+
+#https://www.lens.org/lens/search?q=inventor%3A%22Venter+Craig%22~2+%7C%7C+inventor%3A%22Smith+Hamilton%22~2&l=en
+
+#AND
+
+# https://www.lens.org/lens/search?q=inventor%3A%22Venter+Craig%22~2+%26%26+inventor%3A%22Smith+Hamilton%22~2&l=en

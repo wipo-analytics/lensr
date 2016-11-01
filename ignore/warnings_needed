@@ -1,0 +1,16 @@
+warnings
+
+lens_search and lens count need a warning where the search query is greater than length 1 but boolean is not selected. Maybe set the default in these cases to OR as that is what will be needed most of the time.
+
+test <- lens_count(synbio, type = "tac") produces the following.  Error: expecting a single value
+
+It should be test <- lens_count(synbio, boolean = "OR", type = "tac")
+[1] "https://www.lens.org/lens/search?q=%28title%3A%28%22synthetic+biology%22%29+%7C%7C+abstract%3A%28%22synthetic+biology%22%29+%7C%7C+claims%3A%28%22synthetic+biology%22%29%29&n=50"
+[2] "https://www.lens.org/lens/search?q=%28title%3A%28%22synthetic+genomics%22%29+%7C%7C+abstract%3A%28%22synthetic+genomics%22%29+%7C%7C+claims%3A%28%22synthetic+genomics%22%29%29&n=50"
+[3] "https://www.lens.org/lens/search?q=%28title%3A%28%22synthetic+genome%22%29+%7C%7C+abstract%3A%28%22synthetic+genome%22%29+%7C%7C+claims%3A%28%22synthetic+genome%22%29%29&n=50"
+[4] "https://www.lens.org/lens/search?q=%28title%3A%28%22synthetic+genomes%22%29+%7C%7C+abstract%3A%28%22synthetic+genomes%22%29+%7C%7C+claims%3A%28%22synthetic+genomes%22%29%29&n=50"
+[5] "https://www.lens.org/lens/search?q=%28title%3A%28%22biological+parts%22%29+%7C%7C+abstract%3A%28%22biological+parts%22%29+%7C%7C+claims%3A%28%22biological+parts%22%29%29&n=50"
+[6] "https://www.lens.org/lens/search?q=%28title%3A%28%22genetic+circuit%22%29+%7C%7C+abstract%3A%28%22genetic+circuit%22%29+%7C%7C+claims%3A%28%22genetic+circuit%22%29%29&n=50"
+[7] "https://www.lens.org/lens/search?q=%28title%3A%28%22genetic+circuits%22%29+%7C%7C+abstract%3A%28%22genetic+circuits%22%29+%7C%7C+claims%3A%28%22genetic+circuits%22%29%29&n=50"
+
+ Error: expecting a single value

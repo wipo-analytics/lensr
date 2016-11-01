@@ -1,0 +1,232 @@
+---
+title: "rvest with patent lens"
+author: "Paul Oldham"
+date: "29 June 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## Lens Locations
+
+page 0 is page 1
+page 1 is page 2
+page 2 is page 3
+
+structure of url. The first page. 50 can be specified.
+
+```{r cars}
+https://www.lens.org/lens/search?q=%22synthetic+biology%22&p=0&n=50
+```
+
+
+div div .result
+
+.resultCount
+.breadnum is the number of families
+
+Full text search
+
+```{r}
+"https://www.lens.org/lens/search?q=%22synthetic+biology%22&l=en" #full text
+
+"https://www.lens.org/lens/search?q=%28title%3A%28%22synthetic+biology%22%29+%7C%7C+abstract%3A%28%22synthetic+biology%22%29+%7C%7C+claims%3A%28%22synthetic+biology%22%29%29&l=en" # TAC
+
+"https://www.lens.org/lens/search?q=claims%3A%28%22synthetic+biology%22%29&l=en" # claims
+
+https://www.lens.org/lens/search?q=%22synthetic+biology%22&f=true&l=en # one per family, language is english
+
+#for any language use 
+https://www.lens.org/lens/search?q=%22synthetic+biology%22&f=true
+
+#rank by family is
+
+https://www.lens.org/lens/search?n=50&q=%22dna%22&p=0&f=true&v=table&s=simple_family_size&d=-
+https://www.lens.org/lens/search?n=10&q=%22synthetic+biology%22&f=true&p=0&s=simple_family_size&d=-
+  
+#rank by citations is
+https://www.lens.org/lens/search?n=50&q=%22dna%22&p=0&f=true&v=table&s=citing_pub_key_count&d=-
+  
+https://www.lens.org/lens/search?n=10&q=%22synthetic+biology%22&f=true&p=0&s=citing_pub_key_count&d=-
+
+  
+
+```
+
+
+The data I want is:
+
+```{r}
+library(rvest)
+html <- read_html("https://www.lens.org/lens/search?q=%22synthetic+biology%22&f=true")
+patno <- html_nodes(html, "#results span")
+```
+
+Use the gadget selector to work out the positions of the elements that I want. Note that the paging in the URL is important for retrieving multiple results and some code is needed for that (to calculate the total number of pages - based on 50 pages per set). However, it seems that we cannot scroll through all pages so that may be a problem. Looks like it is limited to only 500 (10 pages), per query on 50 per page. So that will be a significant issue. Will need to use a date range to limit to 500 per set (or go online and download from there which defeats the purpose)
+
+###Selector gadget
+
+results top bar = .resultCount
+results = .resultCount
+families = .breadnum
+
+Results table
+
+the results table is .patNo
+.crumbs , .crumbs a
+
+```{r}
+library(rvest)
+html <- rvest::read_html("https://www.lens.org/lens/search?q=%22synthetic+biology%22")
+
+html <- xml2::read_html("https://www.lens.org/lens/search?q=%28title%3A%28%22synthetic+biology%22%29+%7C%7C+abstract%3A%28%22synthetic+biology%22%29+%7C%7C+claims%3A%28%22synthetic+biology%22%29%29&f=false")
+
+#use in 
+results_families <- rvest::html_nodes(html, ".crumbs") %>% 
+  rvest::html_text() %>%
+  stringr::str_extract_all("[[:digit:]]+")
+  results <- 
+  print()
+  
+query_reveal <- rvest::html_nodes(html, "#previousSearchText") %>%
+  rvest::html_text() %>% 
+  #stringr::str_replace_all(query_reveal[[1]], "\", "")
+  print()
+
+
+
+results <- rvest::html_nodes(html, ".resultCount") %>% 
+  rvest::html_text() %>%
+  as.numeric() %>% 
+  print() # OK use me
+# if families is set to true this will not work because it is presented only as results above (so a new control is needed, can be done later)
+
+families <- rvest::html_nodes(html, ".breadnum:nth-child(4)") %>%
+  rvest::html_text() %>%
+  as.numeric() %>% 
+  print() # Ok use me. Something has gone wrong here. Needs to be done another way.
+
+
+
+publication_numbers <- html_nodes(html, ".link span:nth-child(2)") %>% 
+  html_text() %>%
+  str_replace_all(" ", "") %>%
+  str_replace_all("/", "") %>% 
+  print()
+# returns patent numbers but with line breaks /n
+
+lens_id <- rvest::html_nodes(html, ".lens-id a") %>% 
+  rvest::html_text() %>% 
+  print() # Ok use me
+
+titles <- rvest::html_nodes(html, ".title a") %>% 
+  rvest::html_text() %>% 
+  print() # Ok use me
+
+doc_type <- rvest::html_nodes(html, ".doc-type .sup-result") %>%
+  rvest::html_text() %>%
+  stringr::str_replace_all("       \n     \t\t", "") %>%
+  stringr::str_replace_all("\n    \t", "") %>% 
+  print() # Ok use me
+
+publication_date <- rvest::html_nodes(html, ".sup-item:nth-child(1) .sup-result") %>%
+  rvest::html_text() %>% 
+  stringr::str_trim(side = "both") %>% 
+  print() # Ok, note the use of months as character. Separate to obtain the publication year. Also could usefully convert the date to 
+
+family_count <- rvest::html_nodes(html, ".sup-item:nth-child(2) .sup-result") %>%
+  rvest::html_text() %>% 
+  as.numeric() %>% 
+  print()
+
+citing_count <- rvest::html_nodes(html, ".sup-item:nth-child(3) a") %>%
+  rvest::html_text() %>% 
+  as.numeric() %>% 
+  print()
+
+test <- data.frame(results, families, publication_numbers, lens_id, titles, doc_type, publication_date, family_count, citing_count) %>% print()
+
+# full_text <-  html_nodes(html, ".fa-file-text-o") %>%
+#  html_text() %>% 
+#  print()
+
+
+
+
+
+
+
+crumbs <- html_nodes(html, ".crumbs") %>% 
+  html_text() #returns home, families and query name. 
+
+numbers <- html_nodes(html, "#results a span") %>% 
+  html_text() # returns patent numbers but with line breaks /n
+
+
+
+
+patNo <- html_nodes(html, "#results td .patNo") %>% 
+  html_name()
+
+applicants <- html_nodes(html, "#results .owner .sup-result") %>% 
+  html_text() #Use this
+
+lego_movie %>%
+  html_nodes("#titleCast .itemprop") %>%
+  html_text()
+
+
+```
+
+
+
+```{r}
+library(rvest)
+lego_movie <- read_html("http://www.imdb.com/title/tt1490017/")
+lego_movie %>% 
+  html_node("strong span") %>%
+  html_text() %>%
+  as.numeric()
+```
+
+```{r}
+library(urltools)
+parsed_address <- url_parse("https://www.lens.org/lens/search?q=%22synthetic+biology%22&p=0&n=50")
+
+url_compose(parsed_address) %>% print()
+
+
+url_parse("https://www.lens.org/lens/search?p=1&q=%28title%3A%28%22synthetic+biology%22%29+%7C%7C+abstract%3A%28%22synthetic+biology%22%29+%7C%7C+claims%3A%28%22synthetic+biology%22%29%29&f=false&v=table") %>% print()
+```
+
+###
+
+
+There is something wrong with the claims search as it is report
+
+
+###Search Strategy
+
+#1. get the total results and reduce on family
+#2. rank on citing and retrieve the first 500
+#3. rank on family size and retrieve the first 500
+#4. retrieve the most recent documents where there will be no large family or citations yet, 
+
+That strategy would cover the most important and the most recent documents on a subject. 
+
+##TO DO Add publication date ranges
+
+Publication date: "https://www.lens.org/lens/search?q=%22synthetic+biology%22&dates=%2Bpub_date%3A19991231-20160101&l=en"
+Filing date: "https://www.lens.org/lens/search?q=%22synthetic+biology%22&dates=%2Bfiling_date%3A19991231-20160101&l=en"
+
+YYYYMMDD-
+
+##Document Types: 
+
+Patent Applications and Grants Only (see [types](https://www.lens.org/lens/structured-search))
+
+"https://www.lens.org/lens/search?q=%22synthetic+biology%22&dates=%2Bfiling_date%3A19991231-20160101&types=Patent+Application&types=Granted+Patent&l=en"

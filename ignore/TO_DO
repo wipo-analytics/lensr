@@ -1,0 +1,51 @@
+To do
+
+1. Note that lens_urls (was lens_search) is called by lens_count. This may be the source of the doubling of n=50 on the end that caused so much confusion today when .
+2. families = TRUE as the default for lens_urls (and the new lens_search) was changed to FALSE. This stops unexpected confusion lated. In lens_search it would be logical for it to be set to TRUE but not in lens_urls itself.
+3. lens_count is producing counts of publication numbers in one version, not reducing down to the family number only as intended. So, needs investigating.
+4. In todays work when using !is.null(inventors) etc. Only the second if statement is returning a result. That means that somehow I am doing something wrong.
+
+
+
+1. convert lens search to lens_urls.
+2 Lens_search should be a combination of lens_urls, lens_parse and lens_iterate. That approach will allow the different functions to be tested separately. Otherwise it throws the existing lens_search tests out because returning a data.frame.
+
+Note that lens parse is included in the call to lens_iterate
+3. Make sure that lens_count use of lens_search is consistent.
+
+4. Given that the arguments are shared across functions. Should there be an args function or list. That might allow the different functions to be updated as we move along.
+
+#Document type
+
+See list in .txt and write code. Maybe a lookup table as selector
+
+#Country code IN and NOT IN
+
+Country name and country code list. Then select and OR options for multiple selections.
+
+#Stemming
+
+On by default to turn it off use st=false
+
+https://www.lens.org/lens/search?q=%22synthetic+biology%22&jo=false&j=AR&st=false&l=en
+
+#Calling multiple pages
+
+1. Add lens_count into lens_search and then add the calculator in to work out how many pages to call.
+2. lens_parse may have to loop over a list of lists in the output from lens_search.
+3. In lens parse the results in the tibble come out as factors. So need to be converted to as.character to avoid problems later
+publication_numbers                      lens_id
+                <fctr>                       <fctr>
+
+... with 40 more rows, and 6 more variables: titles <fctr>, applicants <fctr>, doc_type <fctr>,
+#   publication_date <fctr>, family_count <dbl>, citing_count <dbl>
+
+3. Write tests for the above.
+4. add lens_inventors() and
+5. add species names examples for kenya related data.
+
+for example "kenya" AND "species name" OR "species name" OR "species name". That will need some modification to the boolean to allow for AND and OR in the query. Doesn't look like it can be done
+
+try  1 results for ""kenya" && "lion" or "elephant"" as https://www.lens.org/lens/search?q=%22kenya%22+%26%26+%22lion%22+or+%22elephant%22&l=en .Looks like it will actually work with some thought.
+
+https://www.lens.org/lens/search?n=10&q=kenya+AND+%22lion%22&l=en&p=0

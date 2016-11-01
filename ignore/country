@@ -1,0 +1,41 @@
+Country = Jurisdiction
+
+IN
+https://www.lens.org/lens/search?q=%22synthetic+biology%22&jo=true&j=AR&l=en
+
+NOT IN
+
+https://www.lens.org/lens/search?q=%22synthetic+biology%22&jo=false&j=AR&l=en
+
+Need country code list for this task
+
+Armenia
+ARIPO
+Argentina
+Austria
+Australia
+Bosnia And Herzegovina
+Belgium
+Bulgaria
+Brazil
+Belarus
+Canada
+Switzerland
+Chile
+China
+Columbia
+Costa Rica
+Czechoslovakia
+Cuba
+Cyprus
+Czech Republic
+East Germany
+Germany
+Denmark
+Dominican Republic
+Algeria
+Eurasian Patent Organization
+Ecuador
+Estonia
+Egypt
+European Patent Office    Spain    Finland    France    Great Britain    GCC    Greece    Guatemala    Hong Kong    Croatia    Hungary    Indonesia    Ireland    Israel    India    Iceland    Italy    Japan    Kenya    South Korea    Kazakhstan    Lithuania    Luxembourg    Latvia    Morocco    Monaco    Moldova    Mongolia    Malta    Malawi    Mexico    Malaysia    Nicaragua    Netherlands    Norway    New Zealand    OAPI    Panama    Peru    Philippines    Poland    Portugal    Romania    Serbia    Russia    Sweden    Singapore    Slovenia    Slovakia    San Marino    Soviet Union    El Salvador    Tajikistan    Turkey    Trinidad    Taiwan    Ukranian Republic    United States of America    Uruguay    Uzbekistan    Vietnam    WIPO    Yugoslavia    South Africa    Zambia    Zimbabwe

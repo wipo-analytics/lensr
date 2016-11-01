@@ -1,0 +1,6 @@
+.gitignore
+.travis.yml
+ignore
+^.*\.Rproj$
+^\.Rproj\.user$
+CONTRIBUTING.md

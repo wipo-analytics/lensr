@@ -1,0 +1,26 @@
+Authors fields
+
+Clarify what the Authors searches are actually doing. Is it records by or records mentioning or both?
+
+
+Authors
+
+https://www.lens.org/lens/search?q=author%3A%28Craig+Venter%29&l=en
+
+Crossref
+
+https://www.lens.org/lens/search?q=crossref_author%3A%28Craig+Venter%29&l=en
+
+PubMed
+
+https://www.lens.org/lens/search?q=crossref_author%3A%28Craig+Venter%29&l=en
+
+
+AND
+
+https://www.lens.org/lens/search?q=author%3A%28Craig+Venter%29+%26%26+author%3A%28Hamilton+Smith%29&l=en
+
+OR
+
+https://www.lens.org/lens/search?q=author%3A%28Craig+Venter%29+%7C%7C+author%3A%28Hamilton+Smith%29&l=en
+

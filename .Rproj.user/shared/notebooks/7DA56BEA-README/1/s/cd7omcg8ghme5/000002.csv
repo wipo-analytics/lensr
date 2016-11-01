@@ -1,0 +1,1 @@
+"0","df <- lens_search(inventor = auth, inventor_boolean = ""OR"", query = synbio, boolean = ""OR"", type = ""tac"")"

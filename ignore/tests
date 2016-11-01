@@ -1,0 +1,23 @@
+test <- lens_search("synthetic biology", type = "claims", latest_publication = TRUE, families = FALSE)
+[1] "https://www.lens.org/lens/search?q=claims%3A%28%22synthetic+biology%22%29&n=50&p=0&s=pub_date&d=-"
+> test <- lens_search("synthetic biology", type = "claims", latest_filing = TRUE, families = FALSE)
+[1] "https://www.lens.org/lens/search?q=claims%3A%28%22synthetic+biology%22%29&n=50&p=0&s=filing_date&d=-"
+> test <- lens_search("synthetic biology", type = "claims", earliest_filing = TRUE, families = FALSE)
+[1] "https://www.lens.org/lens/search?q=claims%3A%28%22synthetic+biology%22%29&n=50&p=0&s=filing_date&d=%2B"
+
+
+boolean
+and_or_test(synbio, boolean = "OR") %>% print()
+[1] "https://www.lens.org/lens/search?q=%22synthetic+biology%22+%7C%7C+%22synthetic+genomics%22+%7C%7C+%22biological+parts%22"
+and_or_test(synbio, boolean = "AND") %>% print()
+[1] "https://www.lens.org/lens/search?q=%22synthetic+biology%22+%26%26+%22synthetic+genomics%22+%26%26+%22biological+parts%22"
+
+lens_search(synbio, boolean = "OR")
+lens_search(synbio, boolean = "AND")
+
+lens_search(synbio, boolean = "OR")
+lens_search(synbio, boolean = "AND")
+lens_search(synbio, boolean = "OR", type = "title", rank_family = TRUE)
+lens_search(synbio, boolean = "OR", type = "abstract", rank_family = TRUE)
+lens_search(synbio, boolean = "OR", type = "tac", rank_family = TRUE)
+lens_search(synbio, boolean = "OR", type = "tac", rank_citing = TRUE)

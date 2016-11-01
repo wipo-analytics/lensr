@@ -1,0 +1,20 @@
+search combinations
+
+Note that this is only logical as an AND query. Where we have an inventor or applicant name AND a set of search terms. It seems to make no difference whether the inventor or search terms need to go first in the URL except that it is easier to construct the url if the inventor(s) are first in the list.
+
+single inventor and tac terms
+
+https://www.lens.org/lens/search?q=inventor%3A%22Venter+Craig%22~2+%26%26+%28title%3A%28%22synthetic+genomes%22%29+%7C%7C+abstract%3A%28%22synthetic+genomes%22%29+%7C%7C+claims%3A%28%22synthetic+genomes%22%29%29&l=en
+
+single inventor and full text
+
+https://www.lens.org/lens/search?q=inventor%3A%22Venter+Craig%22~2+%26%26+%22synthetic+genomes%22&l=en
+
+"inventor:"Venter Craig"~2 && "synthetic genomes""
+
+two inventors and full text
+
+https://www.lens.org/lens/search?q=inventor%3A%22Ventor+Craig%22~2+%26%26+inventor%3A%22Smith+Hamilton%22~2+%26%26+%22synthetic+genomes%22&l=en
+
+"inventor:"Ventor Craig"~2 && inventor:"Smith Hamilton"~2 && "synthetic genomes""
+

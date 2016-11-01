@@ -1,0 +1,16 @@
+Year ranges
+
+# Year ranges go before family and ranking controls
+# Note YYYYMMDD
+# Note case where user enters a year only needs to be addressed. Preliminary code in lens_urls to default by adding 0101 and 1231 to say 1990 to 2015 where not specified.
+
+# publication date
+
+position after query and before ranking controls in URL.
+
+# https://www.lens.org/lens/search?q=%22synthetic+biology%22&dates=%2Bpub_date%3A20150101-20160930&l=en
+
+#https://www.lens.org/lens/search?q=%28title%3A%28%22synthetic+biology%22%29+%7C%7C+abstract%3A%28%22synthetic+biology%22%29+%7C%7C+claims%3A%28%22synthetic+biology%22%29%29&dates=%2Bpub_date%3A19900101-20160930&l=en
+
+# filing date
+#https://www.lens.org/lens/search?q=%28title%3A%28"synthetic+biology"%29+%7C%7C+abstract%3A%28"synthetic+biology"%29+%7C%7C+claims%3A%28"synthetic+biology"%29%29&dates=%2Bfiling_date%3A19900101-20160930&l=en
