@@ -8,7 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
-
+[![Travis-CI Build Status](https://travis-ci.org/poldham/lensr.svg?branch=master)]
 ## Introduction
 
 The is a pre-release of an R package to provide access to the basic functions of the [Lens Patent Database](https://www.lens.org/lens/) using R. The package is in a very early stage of development and therefore note that all functions may not work, or work consistently. 
