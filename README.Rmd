@@ -100,5 +100,3 @@ df1 <- lens_urls(query = synbio, boolean = "OR", type = "tac") %>%
 ```
 
 The package is under active early stage development and will be updated to address consistency and errors.
-
-trigger build
