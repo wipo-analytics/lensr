@@ -1,11 +1,16 @@
-# #tests for lens searches
-# context("lens_search function")
-#
-# test_that("adds + to phrases", {
-#   lsa <- lens_search("synthetic biology")
-#   expect_match(lsa, "+")
-# })
-#
+#tests for lens searches
+context("lens_search function")
+
+test_that("inventor and query combination works", {
+  lsa <- lens_search(inventor = "donald", query = "duck", timer = 5)
+  expect_is(lsa, "data.frame")
+})
+
+test_that("query alone works", {
+  lsb <- lens_search(query = "duck", timer = 5)
+  expect_is(lsb, "data.frame")
+})
+
 # test_that("boolean OR works", {
 #   lsb <- lens_search(synbio, boolean = "OR")
 #   expect_identical(lsb, "https://www.lens.org/lens/search?q=%22synthetic+biology%22+%7C%7C+%22synthetic+genomics%22+%7C%7C+%22synthetic+genome%22+%7C%7C+%22synthetic+genomes%22+%7C%7C+%22biological+parts%22+%7C%7C+%22genetic+circuit%22+%7C%7C+%22genetic+circuits%22&n=50&f=true")

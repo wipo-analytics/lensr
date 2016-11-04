@@ -1,5 +1,7 @@
 To do
 
+1. in lens search results control is not working on inventor and query
+
 1. Note that lens_urls (was lens_search) is called by lens_count. This may be the source of the doubling of n=50 on the end that caused so much confusion today when .
 2. families = TRUE as the default for lens_urls (and the new lens_search) was changed to FALSE. This stops unexpected confusion lated. In lens_search it would be logical for it to be set to TRUE but not in lens_urls itself.
 3. lens_count is producing counts of publication numbers in one version, not reducing down to the family number only as intended. So, needs investigating.

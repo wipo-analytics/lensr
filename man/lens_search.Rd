@@ -9,7 +9,7 @@ lens_search(query, boolean = "NULL", type = "NULL", pub_date_start = NULL,
   rank_family = "NULL", rank_citing = "NULL", rank_sequences = "NULL",
   latest_publication = "NULL", earliest_publication = "NULL",
   latest_filing = "NULL", earliest_filing = "NULL", families = "TRUE",
-  results = NULL, timer = 30, inventor = "NULL",
+  results = NULL, timer = 30, inventor = NULL,
   inventor_boolean = "NULL")
 }
 \arguments{

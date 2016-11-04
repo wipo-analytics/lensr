@@ -12,7 +12,14 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 
 ## Introduction
 
-The is a pre-release of an R package to provide access to the basic functions of the [Lens Patent Database](https://www.lens.org/lens/) using R. The package is in a very early stage of development and therefore note that all functions may not work, or work consistently. 
+The is a pre-release of an R package to provide access to the basic functions of the [Lens Patent Database](https://www.lens.org/lens/) using R. The package is in an early stage of development. 
+
+For example, we might want to search for patent activity known to be associated with a particular country such as Kenya. In this case we will bring back only the first 50 results
+
+```{r}
+species <- c("Actinomadura kijaniata", "Natrialba magadii", "Natronobacterium magadii", "Glossina brevipalpis", "Phlebotomus duboscqi")
+kenya <- lens_search(query = species, boolean = "OR", families = TRUE, timer = 10)
+```
 
 The Lens provides access to millions of patent records from around the world and allows for searches of the full text (title, abstract, description and claims) of patent documents. We can also search using applicants, inventors and author names and combine searches for say inventors and text terms.
 
@@ -90,14 +97,13 @@ We can then run a search for the inventor names and the key terms as follows.
 df <- lens_search(inventor = auth, inventor_boolean = "OR", query = synbio, boolean = "OR", type = "tac", timer = 20)
 ```
 
-[Correction: Note that families is not added on here because of the lack of links with lens_urls inside this part of lens_search. So the function requires some reformulation, maybe after applicants and ipcs are done.] 
+[Note: Note that families is not added on here because of the lack of links with lens_urls inside this part of lens_search. So the function requires some reformulation, maybe after applicants and ipcs are done.] 
 
-Note that lens_search is not presently running consistently and for key term searching you may prefer to use the following. 
+We can also use `lens_search()` simply with a list of key terms
 
 ```{r lens_urls}
 library(dplyr)
-df1 <- lens_urls(query = synbio, boolean = "OR", type = "tac") %>% 
-  lens_iterate()
+df1 <- lens_search(query = synbio, boolean = "OR", type = "tac")
 ```
 
 The package is under active early stage development and will be updated to address consistency and errors.
