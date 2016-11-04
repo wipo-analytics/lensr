@@ -16,7 +16,7 @@ The is a pre-release of an R package to provide access to the basic functions of
 
 For example, we might want to search for patent activity known to be associated with a particular country such as Kenya. In this case we will bring back only the first 50 results
 
-```{r}
+```{r tidy=TRUE}
 species <- c("Actinomadura kijaniata", "Natrialba magadii", "Natronobacterium magadii", "Glossina brevipalpis", "Phlebotomus duboscqi")
 kenya <- lens_search(query = species, boolean = "OR", families = TRUE, timer = 10)
 ```
