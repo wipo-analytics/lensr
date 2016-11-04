@@ -55,17 +55,15 @@
 #' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "tac", rank_family = TRUE, timer = 30)}
 #' @examples \donrun{lens_search(synbio, boolean = "OR", type = "tac", rank_citing = TRUE, timer = 30)}
 lens_search <- function(query, boolean = "NULL", type = "NULL", pub_date_start = NULL, pub_date_end = NULL, filing_date_start = NULL, filing_date_end = NULL, rank_family = "NULL", rank_citing = "NULL", rank_sequences = "NULL", latest_publication = "NULL", earliest_publication = "NULL", latest_filing = "NULL", earliest_filing = "NULL", families = "TRUE", results = NULL, timer = 30, inventor = NULL, inventor_boolean = "NULL"){
-  #cond <- cond(inventor, query)
   if(!is.null(inventor) && !is.null(query)){
     andlink <- "+%26%26+"
     inv_query <- lens_inventor(inventor)
     query <- lens_urls(query, type, boolean)
     query <- stringr::str_split(query, "=", n = 2)
     query <- paste0(query[[1]][[2]])
-    out <- stringr::str_c(inv_query, andlink, query, collapse = TRUE)#works to here but not as null on inventor
+    out <- stringr::str_c(inv_query, andlink, query, collapse = TRUE)
   } else if(is.null(inventor) && !is.null(query)){
      out <- lens_urls(query, boolean, type, pub_date_start , pub_date_end, filing_date_start, filing_date_end, rank_family, rank_citing, rank_sequences, latest_publication, earliest_publication, latest_filing, earliest_filing, families, results, timer)
-     #%>% lens_iterate(timer) #this part works in isolation but doesnt work in combination. So it is something to do with the if statement or the conditionals.
   }
 out %>% lens_iterate(timer)
 }
