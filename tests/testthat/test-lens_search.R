@@ -6,10 +6,25 @@ test_that("inventor and query combination works", {
   expect_is(lsa, "data.frame")
 })
 
-test_that("query alone works", {
-  lsb <- lens_search(query = "duck", timer = 5)
-  expect_is(lsb, "data.frame")
+test_that("applicant and query combination works", {
+  lsb <- lens_search(applicant = "Synthetic Genomics", query = "synthetic genomics", timer = 5)
+  expect_is(lsb, "data.frame") # look at url and output here
 })
+
+test_that("query alone works", {
+  lsc <- lens_search(query = "duck", timer = 5)
+  expect_is(lsc, "data.frame")
+})
+
+# test_that("query applicant inventor works with tac and families", {
+#   lsc <- lens_search(synbio, boolean = "OR", type = "tac", inventor = "Venter Craig", applicant = "Synthetic Genomics", families = TRUE, timer = 5)
+#   expect_is(lsc, "data.frame")
+# })
+#
+# "https://www.lens.org/lens/search?q=inventor%3A%22Venter+Craig%22~2+%26%26+applicant%3A%28%22Synthetic+Genomics%22%29+%26%26+%28title%3A%28%22synthetic+biology%22+%7C%7C+%22synthetic+genomics%22+%7C%7C+%22synthetic+genome%22+%7C%7C+%22synthetic+genomes%22+%7C%7C+%22biological+parts%22+%7C%7C+%22genetic+circuit%22+%7C%7C+%22genetic+circuits%22%29+%7C%7C+abstract%3A%28%22synthetic+biology%22+%7C%7C+%22synthetic+genomics%22+%7C%7C+%22synthetic+genome%22+%7C%7C+%22synthetic+genomes%22+%7C%7C+%22biological+parts%22+%7C%7C+%22genetic+circuit%22+%7C%7C+%22genetic+circuits%22%29+%7C%7C+claims%3A%28%22synthetic+biology%22+%7C%7C+%22synthetic+genomics%22+%7C%7C+%22synthetic+genome%22+%7C%7C+%22synthetic+genomes%22+%7C%7C+%22biological+parts%22+%7C%7C+%22genetic+circuit%22+%7C%7C+%22genetic+circuits%22%29%29&n=50&f=true"
+
+
+
 
 # test_that("boolean OR works", {
 #   lsb <- lens_search(synbio, boolean = "OR")

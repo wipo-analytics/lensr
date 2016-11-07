@@ -1,8 +1,8 @@
 {
-    "path" : "~/Desktop/open_source_master/lensr/R",
+    "path" : "~/Desktop/open_source_master/lensr/tests/testthat",
     "sortOrder" : [
         {
-            "ascending" : false,
+            "ascending" : true,
             "columnIndex" : 2
         }
     ]

@@ -14,12 +14,12 @@
 #' @examples \dontrun{lens_inventor_keyword(inventor = auth, inventor_boolean = "OR", query = synbio, type = "tac", boolean = "OR")}
 #' @examples \dontrun{lens_inventor_keyword(inventor = "Venter Craig", query = c("synthetic genomes", "synthetic genomics"), type = "tac", boolean = "OR")}
 #' @examples \dontrun{lens_inventor_keyword(inventor = "Venter Craig", query = country$country_name, boolean = "OR")}
-lens_inventor_keyword <- function(inventor = "NULL", inventor_boolean = "NULL", query = "NULL", type = "NULL", boolean = "NULL"){
+lens_inventors_keyword <- function(inventor = "NULL", inventor_boolean = "NULL", query = "NULL", type = "NULL", boolean = "NULL"){
    andlink <- "+%26%26+"
    # build the inventor query and add the bridge link to text search
    if(!is.null(inventor)){
      andlink
-     inv_query <- lens_inventor(inventor)
+     inv_query <- lens_inventors(inventor)
      inv_query <- paste0(inv_query, andlink)
    }
    # add query using nested if statement from lens_urls

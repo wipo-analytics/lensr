@@ -8,7 +8,7 @@
 #' @importFrom stringr str_c
 #' @examples \dontrun{(lens_inventor("Venter Craig"))}
 #' @examples \dontrun{lens_inventor(three_authors)}
-lens_inventor <- function(inventor = "NULL", inventor_boolean = "NULL"){
+lens_inventors <- function(inventor = NULL, inventor_boolean = "NULL"){ #note changed inventor from "NULL" to NULL
   baseurl <- "https://www.lens.org/lens/search?q="
   start <- "inventor%3A%22"
   end <- "%22~2"
@@ -29,18 +29,16 @@ lens_inventor <- function(inventor = "NULL", inventor_boolean = "NULL"){
     orlink
     end
     query <- stringr::str_c(query, collapse = orlink)
-    query <- stringr::str_c(query, end)
-    query <- paste0(baseurl, start, query)
+    query <- paste0(baseurl, start, query, end)
   }
   if(inventor_boolean == "AND"){
     start
     andlink
     end
     query <- stringr::str_c(query, collapse = andlink)
-    query <- stringr::str_c(query, end)
-    query <- paste0(baseurl, start, query)
+    query <- paste0(baseurl, start, query, end)
   }
-  if(inventor_length > 1 & inventor_boolean == "NULL"){ # defaults to OR
+  if(inventor_length > 1 && inventor_boolean == "NULL"){ # defaults to OR
     start
     orlink
     end

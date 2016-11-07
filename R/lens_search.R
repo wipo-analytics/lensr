@@ -32,6 +32,9 @@
 #' @param timer Where retrieving over 50 results, the delay between sending requests to the Lens (default is 30 seconds, used internally by ops_iterate()).
 #' @param inventor An inventor name or vector of inventor names. Use the convention surname and first name (family name and given name) for best results.
 #' @param inventor_boolean Either "OR" or "AND"
+#' @param applicant An applicant name or vector of applicant names.
+#' @param applicant_boolean Either "OR" or "AND"
+#' @param ... core arguments of lens_urls()
 #' @details Only one ranking measure may be used per query. For example, it is
 #'   possible to rank by family scores but not family scores and latest
 #'   publications or earliest publications. The suggested work flow is to
@@ -53,17 +56,53 @@
 #' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "title", rank_family = TRUE, timer = 30)}
 #' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "abstract", rank_family = TRUE, timer = 30)}
 #' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "tac", rank_family = TRUE, timer = 30)}
-#' @examples \donrun{lens_search(synbio, boolean = "OR", type = "tac", rank_citing = TRUE, timer = 30)}
-lens_search <- function(query, boolean = "NULL", type = "NULL", pub_date_start = NULL, pub_date_end = NULL, filing_date_start = NULL, filing_date_end = NULL, rank_family = "NULL", rank_citing = "NULL", rank_sequences = "NULL", latest_publication = "NULL", earliest_publication = "NULL", latest_filing = "NULL", earliest_filing = "NULL", families = "TRUE", results = NULL, timer = 30, inventor = NULL, inventor_boolean = "NULL"){
-  if(!is.null(inventor) && !is.null(query)){
+#' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "tac", rank_citing = TRUE, timer = 30)}
+#' @examples \dontrun{lens_search(query = "synthetic genomics", inventor = "Venter Craig", applicant = "Synthetic Genomics")}
+#' @examples \dontrun{lens_search(query = "synthetic genomics", inventor = "Venter Craig")}
+#' @examples \dontrun{lens_search(query = "synthetic genomics", applicant = "Synthetic Genomics")}
+#' @examples \dontrun{lens_search(query = synbio, boolean = "OR", type = "tac", inventor = "Venter Craig", applicant = "Synthetic Genomics", families = TRUE)}
+lens_search <- function(query, boolean = "NULL", type = "NULL", pub_date_start = NULL, pub_date_end = NULL, filing_date_start = NULL, filing_date_end = NULL, rank_family = "NULL", rank_citing = "NULL", rank_sequences = "NULL", latest_publication = "NULL", earliest_publication = "NULL", latest_filing = "NULL", earliest_filing = "NULL", families = TRUE, results = NULL, applicant = NULL, applicant_boolean = "NULL", inventor = NULL, inventor_boolean = "NULL", timer = 20){
+  # All fields
+  if(!is.null(inventor) && !is.null(applicant) && !is.null(query)){
+  baseurl <- "https://www.lens.org/lens/search?q="
+  andlink <- "+%26%26+"
+  inv_query <- lens_inventors(inventor, inventor_boolean) %>%
+    stringr::str_split(., "=", n = 2)
+  inv_query <- paste0(inv_query[[1]][[2]])
+  app_query <- lens_applicants(applicant, applicant_boolean) %>%
+    stringr::str_split(., "=", n = 2)
+  app_query <- paste0(app_query[[1]][[2]])
+  query <- lens_urls(query, boolean = boolean, type = type, pub_date_start = pub_date_start, pub_date_end = pub_date_end, filing_date_start = filing_date_start, filing_date_end = filing_date_end, rank_family = rank_family, rank_citing = rank_citing, rank_sequences = rank_sequences, latest_publication = latest_publication, earliest_publication = earliest_publication, latest_filing = latest_filing, earliest_filing = earliest_filing, families = families, results = results)
+  query <- stringr::str_split(query, "=", n = 2)
+  query <- paste0(query[[1]][[2]])
+  out <- paste0(baseurl, inv_query, andlink, app_query, andlink, query)
+  }
+  # inventor and query, null applicant
+  if(!is.null(inventor) && is.null(applicant) && !is.null(query)){
+  # baseurl <- "https://www.lens.org/lens/search?q="
+  andlink <- "+%26%26+"
+  #families <- "&f=true"
+  inv_query <- lens_inventors(inventor)
+  query <- lens_urls(query, boolean = boolean, type = type, pub_date_start = pub_date_start, pub_date_end = pub_date_end, filing_date_start = filing_date_start, filing_date_end = filing_date_end, rank_family = rank_family, rank_citing = rank_citing, rank_sequences = rank_sequences, latest_publication = latest_publication, earliest_publication = earliest_publication, latest_filing = latest_filing, earliest_filing = earliest_filing, families = families, results = results)
+  query <- stringr::str_split(query, "=", n = 2)
+  query <- paste0(query[[1]][[2]])
+  out <- stringr::str_c(inv_query, andlink, query, collapse = TRUE)
+  }
+    # applicant and query, null inventor
+  if(is.null(inventor) && !is.null(applicant) && !is.null(query)){
+    # baseurl <- "https://www.lens.org/lens/search?q="
     andlink <- "+%26%26+"
-    inv_query <- lens_inventor(inventor)
-    query <- lens_urls(query, type, boolean)
+    #families <- "&f=true"
+    app_query <- lens_applicants(applicant)
+    query <- lens_urls(query, boolean = boolean, type = type, pub_date_start = pub_date_start, pub_date_end = pub_date_end, filing_date_start = filing_date_start, filing_date_end = filing_date_end, rank_family = rank_family, rank_citing = rank_citing, rank_sequences = rank_sequences, latest_publication = latest_publication, earliest_publication = earliest_publication, latest_filing = latest_filing, earliest_filing = earliest_filing, families = families, results = results)
     query <- stringr::str_split(query, "=", n = 2)
     query <- paste0(query[[1]][[2]])
-    out <- stringr::str_c(inv_query, andlink, query, collapse = TRUE)
-  } else if(is.null(inventor) && !is.null(query)){
-     out <- lens_urls(query, boolean, type, pub_date_start , pub_date_end, filing_date_start, filing_date_end, rank_family, rank_citing, rank_sequences, latest_publication, earliest_publication, latest_filing, earliest_filing, families, results, timer)
+    out <- stringr::str_c(app_query, andlink, query, collapse = TRUE)
   }
-out %>% lens_iterate(timer)
+  # query only
+  if(is.null(inventor) && is.null(applicant) && !is.null(query)){
+    out <- lens_urls(query, boolean = boolean, type = type, pub_date_start = pub_date_start, pub_date_end = pub_date_end, filing_date_start = filing_date_start, filing_date_end = filing_date_end, rank_family = rank_family, rank_citing = rank_citing, rank_sequences = rank_sequences, latest_publication = latest_publication, earliest_publication = earliest_publication, latest_filing = latest_filing, earliest_filing = earliest_filing, families = families, results = results)
+  }
+  # print(out)
+  out %>% lens_iterate(timer)
 }

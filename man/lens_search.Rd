@@ -8,9 +8,9 @@ lens_search(query, boolean = "NULL", type = "NULL", pub_date_start = NULL,
   pub_date_end = NULL, filing_date_start = NULL, filing_date_end = NULL,
   rank_family = "NULL", rank_citing = "NULL", rank_sequences = "NULL",
   latest_publication = "NULL", earliest_publication = "NULL",
-  latest_filing = "NULL", earliest_filing = "NULL", families = "TRUE",
-  results = NULL, timer = 30, inventor = NULL,
-  inventor_boolean = "NULL")
+  latest_filing = "NULL", earliest_filing = "NULL", families = TRUE,
+  results = NULL, applicant = NULL, applicant_boolean = "NULL",
+  inventor = NULL, inventor_boolean = "NULL", timer = 20)
 }
 \arguments{
 \item{query}{One or more terms to search in the patent database.}
@@ -58,11 +58,17 @@ filing).}
 
 \item{results}{The number of results to return, either 50 or 500 (maximum).}
 
-\item{timer}{Where retrieving over 50 results, the delay between sending requests to the Lens (default is 30 seconds, used internally by ops_iterate()).}
+\item{applicant}{An applicant name or vector of applicant names.}
+
+\item{applicant_boolean}{Either "OR" or "AND"}
 
 \item{inventor}{An inventor name or vector of inventor names. Use the convention surname and first name (family name and given name) for best results.}
 
 \item{inventor_boolean}{Either "OR" or "AND"}
+
+\item{timer}{Where retrieving over 50 results, the delay between sending requests to the Lens (default is 30 seconds, used internally by ops_iterate()).}
+
+\item{...}{core arguments of lens_urls()}
 }
 \value{
 a data.frame or tibble
