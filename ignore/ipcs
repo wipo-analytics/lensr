@@ -1,0 +1,20 @@
+A61K31/00 accepted format
+
+"classification_ipcr:A61K31\/00"
+
+https://www.lens.org/lens/search?q=classification_ipcr%3AA61K31%5C%2F00&l=en
+
+https://www.lens.org/lens/search?q=classification_ipcr%3AC12N15%5C%2F82&l=en
+
+slash is %5C%2F
+
+AND
+classification_ipcr:C12N15\/82 && classification_ipcr:C12N5\/00
+
+https://www.lens.org/lens/search?q=classification_ipcr%3AC12N15%5C%2F82+%26%26+classification_ipcr%3AC12N5%5C%2F00&l=en
+
+OR
+
+"classification_ipcr:C12N15\/82 || classification_ipcr:C12N5\/00"
+
+https://www.lens.org/lens/search?q=classification_ipcr%3AC12N15%5C%2F82+%7C%7C+classification_ipcr%3AC12N5%5C%2F00&l=en

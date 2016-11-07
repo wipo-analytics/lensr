@@ -1,0 +1,30 @@
+
+Applicants
+
+"applicant:("Synthetic genomics")"
+
+https://www.lens.org/lens/search?q=applicant%3A%28%22Synthetic+genomics%22%29&l=en
+
+And query
+
+ "applicant:("synthetic genomics") && applicant:("evil empire")"
+
+https://www.lens.org/lens/search?q=applicant%3A%28%22synthetic+genomics%22%29+%26%26+applicant%3A%28%22evil+empire%22%29&l=en
+
+Or query
+
+"applicant:("synthetic genomics") || applicant:("evil empire")"
+
+https://www.lens.org/lens/search?q=applicant%3A%28%22synthetic+genomics%22%29+%7C%7C+applicant%3A%28%22evil+empire%22%29&l=en
+
+Applicant and inventor
+
+applicant:("Synthetic genomics") && inventor:"Craig Venter"~2
+
+https://www.lens.org/lens/search?q=applicant%3A%28%22Synthetic+genomics%22%29+%26%26+inventor%3A%22Craig+Venter%22~2&l=en
+
+Applicant, inventor keyword
+
+applicant:("Synthetic genomics") && inventor:"Craig Venter"~2 && "synthetic biology
+
+https://www.lens.org/lens/search?q=applicant%3A%28%22Synthetic+genomics%22%29+%26%26+inventor%3A%22Craig+Venter%22~2+%26%26+%22synthetic+biology%22&l=en

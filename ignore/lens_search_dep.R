@@ -1,10 +1,13 @@
 #' @title Search the Lens Patent Database
-#' @description This function builds urls to search the Lens patent database. The data is processed using lens_parse(). The default search groups documents by family and will return up to 50 results per page. The maximum number of results that can be retrieved is 500 (10 pages). For larger results sets use the free Lens online Collection facility to download upto 10,000 records. See details for information on the use of ranking and date measures to sort the data.
-#' @param query One or more terms to search in the patent database (one or two
-#'   words only at present)
+#' @description This function allows for the construction of complex queries to search and retrieve data from the Lens. The default search groups documents by family and will return up to 50 results per page. The maximum number of results that can be retrieved is 500 (10 pages). For larger results sets use the free Lens online Collection facility to download upto 10,000 records. See details for information on the use of ranking and date measures to sort the data.
+#' @param query One or more terms to search in the patent database.
 #' @param boolean Select the type of boolean ("OR" or "AND") where using multiple search terms.
-#' @param type Either fulltext (default), title, abstract, claims, or title,
+#' @param type Either fulltext (default), title, abstract, claims, or "tac" for 'title or abstract or claims'.
 #'   abstract and claims (tac). Quoted.
+#' @param pub_date_start Publication date limit to start at as YYYMMDD (numeric).
+#' @param pub_date_end Publication date limit to end at as YYYMMDD (numeric).
+#' @param filing_date_start Filing date limit to start at as YYYMMDD (numeric).
+#' @param filing_date_end Filing date limit to end at as YYYMMDD (numeric).
 #' @param rank_citing Whether to sort the Lens results by the top citing
 #'   (descending). Useful for retrieving important documents. See details.
 #' @param rank_family Whether to sort the Lens results by the number of family
@@ -27,12 +30,14 @@
 #'   filing).
 #' @param results The number of results to return, either 50 or 500 (maximum).
 #' @param timer Where retrieving over 50 results, the delay between sending requests to the Lens (default is 30 seconds, used internally by ops_iterate()).
+#' @param inventor An inventor name or vector of inventor names. Use the convention surname and first name (family name and given name) for best results.
+#' @param inventor_boolean Either "OR" or "AND"
 #' @details Only one ranking measure may be used per query. For example, it is
 #'   possible to rank by family scores but not family scores and latest
 #'   publications or earliest publications. The suggested work flow is to
 #'   retrieve the latest publications, then rank by family and then rank_citing.
 #'   This will allow the most recent and the most important documents to be
-#'   retrieved in three steps for a given query.
+#'   retrieved in three steps for a given query. In patent documents the convention is to list the surname (family name) and then the first names (given names). Name reversals can and do occur but best practice is to use e.g "Kirk James T" rather than "James T Kirk".
 #' @return a data.frame or tibble
 #' @export
 #' @importFrom xml2 read_html
@@ -41,110 +46,24 @@
 #' @importFrom stringr str_replace_all
 #' @importFrom stringr str_trim
 #' @importFrom tibble as_tibble
-#' @examples \dontrun{lens_search("synthetic biology")}
-#' @examples \dontrun{lens_search(synbio, boolean = "OR")}
-#' @examples \dontrun{lens_search(synbio, boolean = "AND")}
-#' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "title", rank_family = TRUE)}
-#' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "abstract", rank_family = TRUE)}
-#' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "tac", rank_family = TRUE)}
-#' @examples \donrun{lens_search(synbio, boolean = "OR", type = "tac", rank_citing = TRUE)}
-lens_search_dep <- function(query, boolean = "NULL", type = "NULL", rank_family = "NULL", rank_citing = "NULL", rank_sequences = "NULL", latest_publication = "NULL", earliest_publication = "NULL", latest_filing = "NULL", earliest_filing = "NULL", families = "TRUE", results = 50, timer = 30){
-  baseurl <- "https://www.lens.org/lens/search?q="
-  # add publication date and filing date ranges
-  # add patent type searches (use lens name) and use applications and grants as default
-  # add control for the number of results as results <- paste0("&n=", results). Keep 50 as the default
-  # add inventors
-  #english <- "&l=en"
-  # Format the query string depending on presence of space, length & boolean choices
-  length <- length(query)
-  if(length == 1){
-    space <- stringr::str_detect(query, " ")
-    query <- stringr::str_replace(query, " ", "+")
+#' @importFrom dplyr %>%
+#' @examples \dontrun{lens_search("synthetic biology", timer = 30)}
+#' @examples \dontrun{lens_search(synbio, boolean = "OR", timer = 30)}
+#' @examples \dontrun{lens_search(synbio, boolean = "AND", timer = 30)}
+#' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "title", rank_family = TRUE, timer = 30)}
+#' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "abstract", rank_family = TRUE, timer = 30)}
+#' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "tac", rank_family = TRUE, timer = 30)}
+#' @examples \dontrun{lens_search(synbio, boolean = "OR", type = "tac", rank_citing = TRUE, timer = 30)}
+lens_search_dep <- function(query, boolean = "NULL", type = "NULL", pub_date_start = NULL, pub_date_end = NULL, filing_date_start = NULL, filing_date_end = NULL, rank_family = "NULL", rank_citing = "NULL", rank_sequences = "NULL", latest_publication = "NULL", earliest_publication = "NULL", latest_filing = "NULL", earliest_filing = "NULL", families = "TRUE", results = NULL, timer = 30, inventor = NULL, inventor_boolean = "NULL"){
+  if(!is.null(inventor) && !is.null(query)){
+    andlink <- "+%26%26+"
+    inv_query <- lens_inventors(inventor)
+    query <- lens_urls(query, type, boolean)
+    query <- stringr::str_split(query, "=", n = 2)
+    query <- paste0(query[[1]][[2]])
+    out <- stringr::str_c(inv_query, andlink, query, collapse = TRUE)
+  } else if(is.null(inventor) && !is.null(query)){
+     out <- lens_urls(query, boolean, type, pub_date_start , pub_date_end, filing_date_start, filing_date_end, rank_family, rank_citing, rank_sequences, latest_publication, earliest_publication, latest_filing, earliest_filing, families, results, timer)
   }
-  if(length > 1){
-    query <- stringr::str_replace(query, " ", "+") #works ok, need an option if multiple terms
-  }
-  if(boolean == "OR"){
-    query <- stringr::str_c(query, collapse = "%22+%7C%7C+%22")
-    # quote <- "%22"
-    # query <- paste0(quote, query, quote)
-  }
-  if(boolean == "AND"){
-    query <- stringr::str_c(query, collapse = "%22+%26%26+%22")
-    # quote <- "%22"
-    # query <- paste0(quote, query, quote)
-  }
-  if(type == "NULL") {
-    query <- paste0("%22", query, "%22", "&n=50")
-  }
-  if(type == "title") {
-    query <- paste0("title%3A%28%22", query, "%22%29","&n=50")
-  }
-  if(type == "abstract") {
-    query <- paste0("abstract", "%3A%28%22", query, "%22%29", "&n=50")
-  }
-  if(type == "claims") {
-    query <- paste0("claims", "%3A%28%22", query, "%22%29", "&n=50")
-  }
-  if(type == "fulltext") {
-    query <- paste0("%22", query, "%22", "&n=50")
-  }
-  if(type == "tac") {
-    query <- paste0("%28title%3A%28%22", query, "%22%29+%7C%7C+abstract%3A%28%22", query, "%22%29+%7C%7C+claims%3A%28%22", query, "%22%29%29", "&n=50")
-  }
-  # Add ranking arguments to the search string
-  if(rank_citing == TRUE){
-    rank_citing <- "&s=citing_pub_key_count&d=-"
-    query <- paste0(query, rank_citing)
-  }
-  if(rank_family == TRUE){
-    rank_family <- "&s=simple_family_size&d=-"
-    query <- paste0(query, rank_family)
-  }
-  if(rank_sequences == TRUE){
-    rank_sequences <- "&s=sequence_count&d=-"
-    query <- paste0(query, rank_sequences)
-  }
-  if(latest_publication == TRUE){
-    latest_publication <- "&s=pub_date&d=-"
-    query <- paste0(query, latest_publication)
-  }
-  if(earliest_publication == TRUE){
-    earliest_publication <- "&s=pub_date&d=%2B"
-    query <- paste0(query, earliest_publication)
-  }
-  if(latest_filing == TRUE){
-    latest_filing <- "&s=filing_date&d=-"
-    query <- paste0(query, latest_filing)
-  }
-  if(earliest_filing == TRUE){
-    earliest_filing <- "&s=filing_date&d=%2B"
-    query <- paste0(query, earliest_filing)
-  }
-  if(families == TRUE){
-    families <- "&f=true"
-    query <- paste0(query, families)
-  }
-  # adds base url here. Renaming from query to lens_pages
-  #a new if statement, if results = 50 then carries on as before. if results = 500 then it runs paste and adds the loop.
-  ##calculate number of results
-  # query
-  # results <- lens_count(query)
-#
-  if(results <= 50){
-    lens_pages <- paste0(baseurl, query)
-    # lens_pages <- lens_parse(lens_pages)
-    lens_pages
-  }
-  # if(results == 500){
-  #   baseurl_pages <- "https://www.lens.org/lens/search?p="
-  #   q <- "&q="
-  #   #there will need to be a counter here for cases where less than 500 results even if only 10 pages can be fetched.
-  #   #qtotal <-
-  #   lens_pages <- paste0(baseurl_pages, seq(0,10), q, query)
-  #   lens_pages <- lens_iterate(lens_pages, lens_parse, Sys.sleep(timer))
-  #   lens_pages
-  # }
-  print(lens_pages)
+out %>% lens_iterate(timer)
 }
-
